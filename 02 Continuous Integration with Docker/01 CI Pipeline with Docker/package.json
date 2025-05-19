@@ -1,0 +1,16 @@
+{
+    "name": "ci-pipeline-demo",
+    "version": "1.0.0",
+    "main": "app.js",
+    "dependencies": {
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "supertest": "^7.0.0"
+    },
+    "scripts": {
+        "start": "node app.js",
+        "test": "jest"
+    }
+}

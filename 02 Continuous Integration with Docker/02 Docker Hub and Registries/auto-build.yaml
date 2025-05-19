@@ -1,0 +1,42 @@
+# Main Learning Points: Automating Image Builds
+# Automatically build and push a Docker image on code changes or a schedule.
+
+name: Automated Docker Build
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # Run every day at 10:03 PM IST (4:33 PM UTC)
+    - cron: '33 16 * * *'
+
+jobs:
+  automated-build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t docker-registries-demo:latest .
+
+      # Log in to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Tag with timestamp
+      - name: Tag with timestamp
+        run: |
+          TIMESTAMP=$(date +%Y%m%d)
+          docker tag docker-registries-demo:latest ${{ secrets.DOCKERHUB_USERNAME }}/docker-registries-demo:$TIMESTAMP
+
+      # Push to Docker Hub
+      - name: Push to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/docker-registries-demo:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/docker-registries-demo:$TIMESTAMP
