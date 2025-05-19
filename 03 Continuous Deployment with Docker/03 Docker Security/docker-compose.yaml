@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    secrets:
+      - app_secret
+    networks:
+      - app-network
+
+secrets:
+  app_secret:
+    file: ./secrets.txt
+
+networks:
+  app-network:
+    driver: bridge

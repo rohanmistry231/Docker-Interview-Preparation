@@ -1,0 +1,44 @@
+# Main Learning Points: Deploying to Google Cloud Run
+# Deploy a Docker image to Google Cloud Run using GitHub Actions.
+
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t deployment-demo:latest .
+
+      # Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Configure Docker for Google Artifact Registry
+      - name: Configure Docker for Google Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      # Push to Google Artifact Registry
+      - name: Push to Google Artifact Registry
+        run: |
+          docker tag deployment-demo:latest us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/deployment-demo/deployment-demo:latest
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/deployment-demo/deployment-demo:latest
+
+      # Deploy to Cloud Run
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: deployment-demo
+          image: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/deployment-demo/deployment-demo:latest
+          region: us-central1
