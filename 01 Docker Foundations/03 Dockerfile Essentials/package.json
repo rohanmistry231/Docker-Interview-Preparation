@@ -1,0 +1,11 @@
+{
+    "name": "dockerfile-essentials-demo",
+    "version": "1.0.0",
+    "main": "app.js",
+    "dependencies": {
+        "express": "^4.18.2"
+    },
+    "scripts": {
+        "build": "echo Building app... && mkdir -p dist && cp app.js dist/"
+    }
+}

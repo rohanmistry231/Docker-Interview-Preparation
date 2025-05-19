@@ -1,0 +1,13 @@
+# Dockerfile using ENTRYPOINT
+FROM node:18-slim
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --production
+
+COPY app.js ./
+
+EXPOSE 3000
+
+ENTRYPOINT ["node", "app.js"]
