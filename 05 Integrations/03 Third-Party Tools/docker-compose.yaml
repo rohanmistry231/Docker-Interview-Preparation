@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DD_AGENT_HOST=datadog-agent
+      - DD_ENV=prod
+    labels:
+      - "com.datadoghq.tags.env=prod"
+      - "com.datadoghq.tags.service=third-party-tools-demo"
+    networks:
+      - monitoring-network
+
+  datadog-agent:
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_SITE=datadoghq.com
+      - DD_DOCKER_LABELS_AS_TAGS=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    networks:
+      - monitoring-network
+
+networks:
+  monitoring-network:
+    driver: bridge

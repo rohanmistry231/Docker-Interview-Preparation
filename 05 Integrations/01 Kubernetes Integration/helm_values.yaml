@@ -1,0 +1,9 @@
+replicaCount: 3
+
+image:
+  repository: your-dockerhub-username/k8s-integration-demo
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-integration-demo
+  labels:
+    app: aws-integration-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aws-integration-demo
+  template:
+    metadata:
+      labels:
+        app: aws-integration-demo
+    spec:
+      containers:
+      - name: app
+        image: <your-ecr-repo-uri>:latest
+        ports:
+        - containerPort: 3000
